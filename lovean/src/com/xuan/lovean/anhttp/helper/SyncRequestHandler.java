@@ -1,0 +1,83 @@
+package com.xuan.lovean.anhttp.helper;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.protocol.HttpContext;
+
+import com.xuan.lovean.anhttp.helper.entityhandler.StringEntityHandler;
+
+/**
+ * 同步请求处理
+ * 
+ * @author xuan
+ * @version $Revision: 1.0 $, $Date: 2013-4-7 下午6:58:53 $
+ */
+public class SyncRequestHandler {
+
+    private final AbstractHttpClient client;
+    private final HttpContext context;
+    private final StringEntityHandler entityHandler = new StringEntityHandler();
+
+    private int executionCount = 0;
+    private final String charset;
+
+    public SyncRequestHandler(AbstractHttpClient client, HttpContext context, String charset) {
+        this.client = client;
+        this.context = context;
+        this.charset = charset;
+    }
+
+    private Object makeRequestWithRetries(HttpUriRequest request) throws IOException {
+
+        boolean retry = true;
+        IOException cause = null;
+        HttpRequestRetryHandler retryHandler = client.getHttpRequestRetryHandler();
+        while (retry) {
+            try {
+                HttpResponse response = client.execute(request, context);
+                return entityHandler.handleEntity(response.getEntity(), null, charset);
+            }
+            catch (UnknownHostException e) {
+                cause = e;
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            }
+            catch (IOException e) {
+                cause = e;
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            }
+            catch (NullPointerException e) {
+                // HttpClient 4.0.x 之前的一个bug
+                // http://code.google.com/p/android/issues/detail?id=5255
+                cause = new IOException("NPE in HttpClient" + e.getMessage());
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            }
+            catch (Exception e) {
+                cause = new IOException("Exception" + e.getMessage());
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            }
+        }
+        if (cause != null) {
+            throw cause;
+        }
+        else {
+            throw new IOException("未知网络错误");
+        }
+
+    }
+
+    public Object sendRequest(HttpUriRequest... params) {
+        try {
+            return makeRequestWithRetries(params[0]);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}

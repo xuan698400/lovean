@@ -6,135 +6,122 @@ import java.io.InputStreamReader;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.xuan.lovean.utils.Validators;
-
 /**
- * DBHelper£¬µÚÒ»´ÎÔËĞĞ³ÌĞò»òÉı¼¶³ÌĞòºó×Ô¶¯´´½¨»òÉı¼¶Êı¾İ¿â
+ * DBHelperï¼Œç¬¬ä¸€æ¬¡è¿è¡Œç¨‹åºæˆ–å‡çº§ç¨‹åºåè‡ªåŠ¨åˆ›å»ºæˆ–å‡çº§æ•°æ®åº“
  * 
  * @author xuan
+ * @version $Revision: 1.0 $, $Date: 2013-3-20 ä¸‹åˆ7:33:06 $
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-	private static final String TAG = "lovean.DBHelper";
+    private static final String TAG = "lovean.DBHelper";
 
-	// ÓÃÓÚ³õÊ¼»¯»òÉı¼¶Êı¾İ¿âµÄÎÄ¼şÃû£¬Ã¿ÉıÒ»´Îdb.version¾Í+1
-	private static final String DB_INIT_OR_UPGRADE_FILENAME = "db_${db.version}.sql";
+    // æ•°æ®åº“åï¼Œä½¿ç”¨æ—¶å¯ä»¥æ ¹æ®è‡ªå·±é¡¹ç›®å®šä¹‰åç§°
+    public static final String DATABASE_NAME = "lovean";
 
-	// Êı¾İ¿â°æ±¾ºÅ£¬³ÌĞò³õÊ¼»¯Ê±±ØĞë³õÊ¼»¯´ËÖµ
-	private static int DATABASE_VERSION = -1;
+    // ç”¨äºåˆå§‹åŒ–æˆ–å‡çº§æ•°æ®åº“çš„æ–‡ä»¶åï¼Œæ¯å‡ä¸€æ¬¡db.versionå°±+1
+    private static final String DB_INIT_OR_UPGRADE_FILENAME = "db_${db.version}.sql";
 
-	// Êı¾İ¿âÃû£¬³ÌĞò³õÊ¼»¯Ê±±ØĞë³õÊ¼»¯´ËÖµ
-	public static String DATABASE_NAME = "lovean";
+    // æ•°æ®åº“ç‰ˆæœ¬å·ï¼Œç¨‹åºåˆå§‹åŒ–æ—¶å¿…é¡»åˆå§‹åŒ–æ­¤å€¼
+    private static int DATABASE_VERSION = -1;
 
-	private final Context context;
+    private final Context context;
 
-	/**
-	 * ÉèÖÃÊı¾İ¿â°æ±¾ºÅ£¬±ØĞë³õÊ¼»¯(µ±Ó¦ÓÃÆğÀ´µÄÊ±ºò¾Í¿ÉÒÔ³õÊ¼»¯ÁË)
-	 * 
-	 * @param DATABASE_VERSION
-	 *            the DATABASE_VERSION to set
-	 */
-	public static void init(String DATABASE_NAME, int DATABASE_VERSION) {
-		DBHelper.DATABASE_VERSION = DATABASE_VERSION;
-		DBHelper.DATABASE_NAME = DATABASE_NAME;
-	}
+    /**
+     * è®¾ç½®æ•°æ®åº“ç‰ˆæœ¬å·ï¼Œå¿…é¡»åˆå§‹åŒ–
+     * 
+     * @param DATABASE_VERSION
+     *            the DATABASE_VERSION to set
+     */
+    public static void init(int DATABASE_VERSION) {
+        DBHelper.DATABASE_VERSION = DATABASE_VERSION;
+    }
 
-	public DBHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		this.context = context;
-	}
+    public DBHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
+    }
 
-	/**
-	 * Êı¾İ¿âµÚÒ»´Î±»´´½¨Ê±±»µ÷ÓÃ£¨²»ÔÚ¹¹Ôìº¯ÊıÖĞ·¢Éú£¬ÊÇÔÚµ÷ÓÃgetWritableDatabase»ògetReadableDatabaseÊ±±»µ÷ÓÃÊ±£©
-	 */
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		if (DATABASE_VERSION <= 0) {
-			throw new RuntimeException(
-					"DBHelper.DATABASE_VERSION±ØĞë³õÊ¼»¯£¬Çëµ÷ÓÃinit·½·¨");
-		}
+    /**
+     * æ•°æ®åº“ç¬¬ä¸€æ¬¡è¢«åˆ›å»ºæ—¶è¢«è°ƒç”¨ï¼ˆä¸åœ¨æ„é€ å‡½æ•°ä¸­å‘ç”Ÿï¼Œæ˜¯åœ¨è°ƒç”¨getWritableDatabaseæˆ–getReadableDatabaseæ—¶è¢«è°ƒç”¨æ—¶ï¼‰
+     */
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        if (DATABASE_VERSION <= 0) {
+            throw new RuntimeException("DBHelper.DATABASE_VERSIONå¿…é¡»åˆå§‹åŒ–ï¼Œè¯·è°ƒç”¨initæ–¹æ³•");
+        }
+        Log.i(TAG, "initing dababase");
 
-		if (Validators.isEmpty(DATABASE_NAME)) {
-			throw new RuntimeException("DBHelper.DATABASE_NAME²»ÄÜÎª¿Õ");
-		}
+        // read and execute assets/db_1.sql
+        executeSqlFromFile(db, DB_INIT_OR_UPGRADE_FILENAME.replace("${db.version}", "1"));
 
-		Log.i(TAG, "initing dababase");
+        // å¦‚æœè°ƒç”¨onCreateæ—¶ç‰ˆæœ¬å·æ¯”1å¤§ï¼Œåˆ™å‡çº§(å‘ç”Ÿåœ¨å¤šæ¬¡å‡çº§åï¼Œç”¨æˆ·ç¬¬ä¸€æ¬¡å®‰è£…ï¼Œæˆ–è€…ç”¨æˆ·å¸è½½åé‡æ–°å®‰è£…)
+        if (DATABASE_VERSION > 1) {
+            onUpgrade(db, 1, DATABASE_VERSION);
+        }
+    }
 
-		// read and execute assets/db_1.sql
-		executeSqlFromFile(db,
-				DB_INIT_OR_UPGRADE_FILENAME.replace("${db.version}", "1"));
+    /**
+     * æ•°æ®åº“çš„ç‰ˆæœ¬å·è¡¨æ˜è¦å‡çº§æ—¶è¢«è°ƒç”¨
+     */
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (DATABASE_VERSION <= 0) {
+            throw new RuntimeException("DBHelper.DATABASE_VERSIONå¿…é¡»åˆå§‹åŒ–ï¼Œè¯·è°ƒç”¨initæ–¹æ³•");
+        }
 
-		// Èç¹ûµ÷ÓÃonCreateÊ±°æ±¾ºÅ±È1´ó£¬ÔòÉı¼¶(·¢ÉúÔÚ¶à´ÎÉı¼¶ºó£¬ÓÃ»§µÚÒ»´Î°²×°£¬»òÕßÓÃ»§Ğ¶ÔØºóÖØĞÂ°²×°)
-		if (DATABASE_VERSION > 1) {
-			onUpgrade(db, 1, DATABASE_VERSION);
-		}
-	}
+        if (newVersion <= oldVersion) {
+            return;
+        }
 
-	/**
-	 * Êı¾İ¿âµÄ°æ±¾ºÅ±íÃ÷ÒªÉı¼¶Ê±±»µ÷ÓÃ
-	 */
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (DATABASE_VERSION <= 0) {
-			throw new RuntimeException(
-					"DBHelper.DATABASE_VERSION±ØĞë³õÊ¼»¯£¬Çëµ÷ÓÃinit·½·¨");
-		}
+        Log.i(TAG, "updating dababase from version " + oldVersion + "to version " + newVersion);
+        for (int i = oldVersion + 1; i <= newVersion; i++) {
+            executeSqlFromFile(db, DB_INIT_OR_UPGRADE_FILENAME.replace("${db.version}", String.valueOf(i)));
+        }
+    }
 
-		if (newVersion <= oldVersion) {
-			return;
-		}
+    /**
+     * ä»æ–‡ä»¶è¯»å–sqlå¹¶æ‰§è¡Œ
+     * 
+     * @param db
+     * @param fileName
+     */
+    private void executeSqlFromFile(SQLiteDatabase db, String fileName) {
+        Log.i(TAG, "begin to execute sql in assets/" + fileName);
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(fileName)));
 
-		Log.i(TAG, "updating dababase from version " + oldVersion
-				+ "to version " + newVersion);
-		for (int i = oldVersion + 1; i <= newVersion; i++) {
-			executeSqlFromFile(
-					db,
-					DB_INIT_OR_UPGRADE_FILENAME.replace("${db.version}",
-							String.valueOf(i)));
-		}
-	}
+            String line = null;
+            StringBuilder sql = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("--")) {// æ³¨é‡Šè¡Œ
+                    continue;
+                }
+                if (line.trim().equalsIgnoreCase("go")) {// è¡¨ç¤ºä¸€å¥sqlçš„ç»“æŸ
+                    if (!TextUtils.isEmpty(sql.toString())) {
+                        // æ‰§è¡Œsql
+                        db.execSQL(sql.toString());
+                    }
+                    sql = new StringBuilder();
+                    continue;
+                }
+                sql.append(line);
+            }
+            if (!TextUtils.isEmpty(sql.toString())) {
+                // æ‰§è¡Œsql
+                db.execSQL(sql.toString());
+            }
 
-	/**
-	 * ´ÓÎÄ¼ş¶ÁÈ¡sql²¢Ö´ĞĞ
-	 * 
-	 * @param db
-	 * @param fileName
-	 */
-	private void executeSqlFromFile(SQLiteDatabase db, String fileName) {
-		Log.i(TAG, "begin to execute sql in assets/" + fileName);
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					context.getAssets().open(fileName)));
+        }
+        catch (Exception e) {
+            Log.e(TAG, "", e);
+            throw new RuntimeException(e);
+        }
 
-			String line = null;
-			StringBuilder sql = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("--")) {// ×¢ÊÍĞĞ
-					continue;
-				}
-				if (line.trim().equalsIgnoreCase("go")) {// ±íÊ¾Ò»¾äsqlµÄ½áÊø
-					if (!Validators.isEmpty(sql.toString())) {
-						// Ö´ĞĞsql
-						db.execSQL(sql.toString());
-					}
-					sql = new StringBuilder();
-					continue;
-				}
-				sql.append(line);
-			}
-			if (!Validators.isEmpty(sql.toString())) {
-				// Ö´ĞĞsql
-				db.execSQL(sql.toString());
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "", e);
-			throw new RuntimeException(e);
-		}
-
-		Log.i(TAG, "succeed to execute sql in assets/" + fileName);
-	}
+        Log.i(TAG, "succeed to execute sql in assets/" + fileName);
+    }
 
 }
