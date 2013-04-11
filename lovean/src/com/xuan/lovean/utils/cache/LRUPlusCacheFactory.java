@@ -39,12 +39,20 @@ public abstract class LRUPlusCacheFactory {
     }
 
     /**
-     * 从缓存池中获取一个缓存，如果之前没有，那返回null
+     * 从缓存池中获取一个缓存，如果没有就新建默认大小的
      * 
      * @param cacheId
+     * @return
      */
-    public static void getCache(String cacheId) {
-        cachePool.get(cacheId);
+    public static LRUPlusCache getCache(String cacheId) {
+        LRUPlusCache cache = cachePool.get(cacheId);
+
+        if (null == cache) {
+            cache = new LRUPlusCache(DEFAULT_CACHE_SIZE);
+            cachePool.put(cacheId, cache);
+        }
+
+        return cache;
     }
 
     /**
@@ -55,6 +63,22 @@ public abstract class LRUPlusCacheFactory {
      */
     public static boolean isCacheExits(String cacheId) {
         return cachePool.containsKey(cacheId);
+    }
+
+    /**
+     * 清空缓存池
+     */
+    public static void clearCachePool() {
+        cachePool.clear();
+    }
+
+    /**
+     * 从缓存池中删除指定缓存
+     * 
+     * @param cacheId
+     */
+    public static void removeCache(String cacheId) {
+        cachePool.remove(cacheId);
     }
 
 }

@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/com/xuan/lovean/db/BasicDaoAdapter.java=UTF-8
 encoding//src/com/xuan/lovean/db/DBHelper.java=UTF-8
-encoding//src/com/xuan/lovean/ioc/activity/AnActivity.java=UTF-8
-encoding//src/com/xuan/lovean/ioc/annotation/InjectView.java=UTF-8
+encoding//src/com/xuan/lovean/ioc/AnActivity.java=UTF-8
+encoding//src/com/xuan/lovean/ioc/InjectView.java=UTF-8
 encoding//src/com/xuan/lovean/utils=UTF-8
 encoding/src=UTF-8

@@ -10,10 +10,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import com.xuan.lovean.db.callback.MapRowMapper;
+import com.xuan.lovean.db.callback.MultiRowMapper;
+import com.xuan.lovean.db.callback.SingleRowMapper;
 import com.xuan.lovean.db.helper.SqlCreator;
-import com.xuan.lovean.db.interfaces.MapRowMapper;
-import com.xuan.lovean.db.interfaces.MultiRowMapper;
-import com.xuan.lovean.db.interfaces.SingleRowMapper;
 
 /**
  * 操作数据库表的适配器基类

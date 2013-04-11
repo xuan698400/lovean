@@ -2,7 +2,13 @@ package com.xuan.lovean;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+
+import com.xuan.lovean.asynctask.DemoTask;
+import com.xuan.lovean.asynctask.callback.AsyncTaskFailCallback;
+import com.xuan.lovean.asynctask.callback.AsyncTaskSuccessCallback;
+import com.xuan.lovean.asynctask.helper.Result;
 
 public class MainLoveAnActivity extends Activity {
 
@@ -19,4 +25,20 @@ public class MainLoveAnActivity extends Activity {
         return true;
     }
 
+    public void asyncTest() {
+        DemoTask demoTask = new DemoTask(this);
+        demoTask.setAsyncTaskSuccessCallback(new AsyncTaskSuccessCallback<String>() {
+            @Override
+            public void successCallback(Result<String> result) {
+                String value = result.getValue();
+                Log.d("1111", value);
+            }
+        });
+        demoTask.setAsyncTaskFailCallback(new AsyncTaskFailCallback<String>() {
+            @Override
+            public void failCallback(Result<String> result) {
+            }
+        });
+        demoTask.execute(new Object[] { "xuan" });
+    }
 }

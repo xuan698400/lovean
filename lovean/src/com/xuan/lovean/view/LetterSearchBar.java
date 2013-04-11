@@ -11,92 +11,113 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * ×ÖÄ¸Ë÷Òı
+ * å­—æ¯ç´¢å¼•
  * 
  * @author xuan
  */
 public class LetterSearchBar extends View {
-	private final String[] strArray = new String[] { "A", "B", "C", "D", "E",
-			"F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-			"S", "T", "U", "V", "W", "X", "Y", "Z", "#" };
+    private final String[] strArray = new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+            "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#" };
 
-	private int width;// µ¥¸ö×ÖÄ¸µÄ¿í
-	private int height;// µ¥¸ö×ÖÄ¸µÄ¸ß
+    private int width;// å•ä¸ªå­—æ¯çš„å®½
+    private int height;// å•ä¸ªå­—æ¯çš„é«˜
 
-	private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);// »­±Ê
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);// ç”»ç¬”
 
-	private OnLetterChange onLetterChange;// ×ÖÄ¸¸Ä±äÊÂ¼ş
+    private OnLetterChange onLetterChange;// å­—æ¯æ”¹å˜äº‹ä»¶
+    private DismissLetterShow dismissLetterShow;// éšè—å­—å¹•æ˜¾ç¤º
 
-	public LetterSearchBar(Context context) {
-		super(context);
-	}
+    public LetterSearchBar(Context context) {
+        super(context);
+    }
 
-	public LetterSearchBar(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public LetterSearchBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public LetterSearchBar(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public LetterSearchBar(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	// ²¼¾ÖµÄ´óĞ¡¸Ä±äÊ±£¬¾Í»áµ÷ÓÃ¸Ã·½·¨
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		width = w;
-		height = h / strArray.length;
-		super.onSizeChanged(w, h, oldw, oldh);
-	}
+    // å¸ƒå±€çš„å¤§å°æ”¹å˜æ—¶ï¼Œå°±ä¼šè°ƒç”¨è¯¥æ–¹æ³•
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        width = w;
+        height = h / strArray.length;
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_DOWN
-				|| event.getAction() == MotionEvent.ACTION_MOVE) {
-			int tempY = (int) ((event.getY() - 0) / height);// ¼ÆËã×ÖÄ¸µÄÎ»ÖÃ
-			if (tempY < strArray.length && event.getY() > 0) {
-				if (null != onLetterChange) {
-					onLetterChange.letterChange(strArray[tempY]);
-				}
-				// ÕâÀïÉèÖÃ±³¾°2chatfrom_bg_new_fmessage_pressed.9.png
-			}
-		} else {
-			// ÕâÀïÉèÖÃ±³¾°1
-			// setBackgroundResource(0);
-		}
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
+            int tempY = (int) ((event.getY() - 0) / height);// è®¡ç®—å­—æ¯çš„ä½ç½®
+            if (tempY < strArray.length && event.getY() > 0) {
+                if (null != onLetterChange) {
+                    onLetterChange.letterChange(strArray[tempY]);
+                }
+                // è¿™é‡Œè®¾ç½®èƒŒæ™¯2chatfrom_bg_new_fmessage_pressed.9.png
+                setBackgroundColor(Color.BLACK);
+                getBackground().setAlpha(50);// 0-255ï¼Œ0ä¸ºå…¨é€æ˜
+            }
+        }
+        else {
+            // è¿™é‡Œè®¾ç½®èƒŒæ™¯1
+            // setBackgroundResource(0);
+            // setBackgroundResource(R.color.color_transparent);
 
-		return true;// ·ÀÖ¹ÊÂ¼şÍù¸¸ÈİÆ÷´«µİ
-	}
+            if (null != dismissLetterShow) {
+                dismissLetterShow.dismiss();
+            }
+        }
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+        return true;// é˜²æ­¢äº‹ä»¶å¾€çˆ¶å®¹å™¨ä¼ é€’
+    }
 
-		// ÉèÖÃPaintµÄÊôĞÔ
-		paint.setFakeBoldText(true);
-		paint.setColor(Color.GRAY);
-		paint.setStyle(Style.FILL);
-		paint.setTextSize(height * 0.75f);
-		paint.setTextAlign(Paint.Align.CENTER);
-		FontMetrics fm = paint.getFontMetrics();
-		float x = width / 2;
-		float y = height / 2 - (fm.ascent + fm.descent) / 2;
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
 
-		for (int i = 0; i < strArray.length; i++) {
-			canvas.drawText(strArray[i], x, i * height + y + 0, paint);
-		}
-	}
+        // è®¾ç½®Paintçš„å±æ€§
+        paint.setFakeBoldText(true);
+        paint.setColor(Color.GRAY);
+        paint.setStyle(Style.FILL);
+        paint.setTextSize(height * 0.75f);
+        paint.setTextAlign(Paint.Align.CENTER);
+        FontMetrics fm = paint.getFontMetrics();
+        float x = width / 2;
+        float y = height / 2 - (fm.ascent + fm.descent) / 2;
 
-	/**
-	 * ËÑË÷×ÖÄ¸¸Ä±äÊÂ¼ş
-	 * 
-	 * @author xuan
-	 * @version $Revision: 1.0 $, $Date: 2012-11-1 ÏÂÎç6:10:00 $
-	 */
-	public interface OnLetterChange {
-		void letterChange(String letter);
-	}
+        for (int i = 0; i < strArray.length; i++) {
+            canvas.drawText(strArray[i], x, i * height + y + 0, paint);
+        }
+    }
 
-	public void setOnLetterChange(OnLetterChange onLetterChange) {
-		this.onLetterChange = onLetterChange;
-	}
+    /**
+     * æœç´¢å­—æ¯æ”¹å˜äº‹ä»¶
+     * 
+     * @author xuan
+     * @version $Revision: 1.0 $, $Date: 2012-11-1 ä¸‹åˆ6:10:00 $
+     */
+    public interface OnLetterChange {
+        void letterChange(String letter);
+    }
+
+    /**
+     * éšè—èƒŒæ™¯æ—¶ä¼šè¢«è°ƒç”¨ï¼Œç”¨æ¥éšè—å­—å¹•çš„æ˜¾ç¤º
+     * 
+     * @author xuan
+     * @version $Revision: 1.0 $, $Date: 2013-3-14 ä¸Šåˆ10:22:56 $
+     */
+    public interface DismissLetterShow {
+        void dismiss();
+    }
+
+    public void setOnLetterChange(OnLetterChange onLetterChange) {
+        this.onLetterChange = onLetterChange;
+    }
+
+    public void setDismissLetterShow(DismissLetterShow dismissLetterShow) {
+        this.dismissLetterShow = dismissLetterShow;
+    }
 
 }
