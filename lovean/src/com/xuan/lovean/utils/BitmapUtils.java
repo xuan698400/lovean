@@ -93,7 +93,7 @@ public abstract class BitmapUtils {
      * @param bitmap
      * @return
      */
-    public byte[] Bitmap2Bytes(Bitmap bitmap) {
+    public byte[] bitmap2Bytes(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         return baos.toByteArray();
@@ -105,13 +105,12 @@ public abstract class BitmapUtils {
      * @param bytes
      * @return
      */
-    public Bitmap Bytes2Bimap(byte[] bytes) {
-        if (bytes.length != 0) {
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        }
-        else {
+    public Bitmap bytes2Bimap(byte[] bytes) {
+        if (null == bytes || 0 == bytes.length) {
             return null;
         }
+
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     /**
@@ -170,32 +169,6 @@ public abstract class BitmapUtils {
     public static Drawable Bitmap2Drawable(Context context, Bitmap bitmap) {
         BitmapDrawable bd = new BitmapDrawable(context.getResources(), bitmap);
         return bd;
-    }
-
-    /**
-     * 获得圆角图片
-     * 
-     * @param bitmap
-     * @param roundPx
-     * @return
-     */
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, float roundPx) {
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-        Bitmap output = Bitmap.createBitmap(w, h, Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, w, h);
-        final RectF rectF = new RectF(rect);
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        return output;
     }
 
     /**

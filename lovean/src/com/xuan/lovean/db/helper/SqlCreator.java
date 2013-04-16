@@ -8,7 +8,7 @@ package com.xuan.lovean.db.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xuan.lovean.utils.Validators;
+import android.text.TextUtils;
 
 /**
  * 动态查询 SQL 语句生成工具类
@@ -44,7 +44,7 @@ public class SqlCreator {
      *            原始 sql 是否带有 WHERE 关键字
      */
     public SqlCreator(String baseSQL, boolean hasWhere) {
-        if (Validators.isEmpty(baseSQL)) {
+        if (TextUtils.isEmpty(baseSQL)) {
             throw new IllegalArgumentException("baseSQL can't be null");
         }
 
@@ -259,7 +259,7 @@ public class SqlCreator {
      *            列名
      */
     public void groupBy(String... columnNames) {
-        if (Validators.isEmpty(columnNames)) {
+        if (columnNames == null || columnNames.length == 0) {
             return;
         }
 
