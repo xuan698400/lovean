@@ -1,10 +1,12 @@
 package com.xuan.lovean.utils.textviewhtml;
 
+import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
 import android.widget.TextView;
 
 import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4Path;
+import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4ResidBySize;
 import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4Url;
 
 /**
@@ -68,6 +70,18 @@ public abstract class TextViewHtmlUtils {
      */
     public static void setTextAndImgByHtml4Path(TextView textView, String htmlStr) {
         TextViewHtmlUtils.setTextByHtml(textView, htmlStr, new ImgGetter4Path(), null);
+    }
+
+    /**
+     * 会有图片处理，图片是从res中获取，图片大小自己指定哦
+     * 
+     * @param textView
+     * @param htmlStr
+     * @param context
+     */
+    public static void setTextAndImgByHtml4ResidBySize(TextView textView, String htmlStr, Context context, int width,
+            int height) {
+        TextViewHtmlUtils.setTextByHtml(textView, htmlStr, new ImgGetter4ResidBySize(context, width, height), null);
     }
 
 }
