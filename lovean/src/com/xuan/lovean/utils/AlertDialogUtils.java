@@ -30,7 +30,6 @@ public class AlertDialogUtils {
     public static void displayAlert(Context context, String title, String message, String buttonText) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

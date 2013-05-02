@@ -8,6 +8,7 @@ package com.xuan.lovean.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 /**
  * 用本手机发送短信功能
@@ -18,19 +19,22 @@ import android.net.Uri;
 public abstract class SmsSendUtils {
 
     /**
+     * 调用短信程序发送短信
+     * 
+     * @param context
+     */
+    public static void sendSms(Context context) {
+        SmsSendUtils.sendSmsByPhoneAndContext(context, null, null);
+    }
+
+    /**
      * 根据手机号发送短信
      * 
      * @param context
      * @param phone
      */
     public static void sendSmsByPhone(Context context, String phone) {
-        if (Validators.isEmpty(phone)) {
-            return;
-        }
-        Uri uri = Uri.parse("smsto:" + phone);
-        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-        // intent.putExtra("sms_body", "");
-        context.startActivity(intent);
+        SmsSendUtils.sendSmsByPhoneAndContext(context, phone, null);
     }
 
     /**
@@ -40,7 +44,21 @@ public abstract class SmsSendUtils {
      * @param content
      */
     public static void sendSmsByContent(Context context, String content) {
-        Uri uri = Uri.parse("smsto:");
+        SmsSendUtils.sendSmsByPhoneAndContext(context, null, content);
+    }
+
+    /**
+     * 初始化手机号和内容
+     * 
+     * @param context
+     * @param phone
+     * @param content
+     */
+    public static void sendSmsByPhoneAndContext(Context context, String phone, String content) {
+        phone = TextUtils.isEmpty(phone) ? "" : phone;
+        content = TextUtils.isEmpty(content) ? "" : content;
+
+        Uri uri = Uri.parse("smsto:" + phone);
         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
         intent.putExtra("sms_body", content);
         context.startActivity(intent);

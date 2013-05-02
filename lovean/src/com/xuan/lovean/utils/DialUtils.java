@@ -8,6 +8,7 @@ package com.xuan.lovean.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 /**
  * 拨打电话工具类
@@ -24,7 +25,7 @@ public abstract class DialUtils {
      * @param phone
      */
     public static void callByPhone(Context context, String phone) {
-        if (Validators.isEmpty(phone)) {
+        if (TextUtils.isEmpty(phone)) {
             return;
         }
 

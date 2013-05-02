@@ -3,9 +3,11 @@ package com.xuan.lovean.utils.textviewhtml;
 import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4Path;
+import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4Resid;
 import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4ResidBySize;
 import com.xuan.lovean.utils.textviewhtml.helper.ImgGetter4Url;
 
@@ -23,6 +25,10 @@ public abstract class TextViewHtmlUtils {
      * @param htmlStr
      */
     public static void setTextByHtml(TextView textView, String htmlStr) {
+        if (TextUtils.isEmpty(htmlStr)) {
+            return;
+        }
+
         Spanned text = Html.fromHtml(htmlStr);
         textView.setText(text);
     }
@@ -37,6 +43,10 @@ public abstract class TextViewHtmlUtils {
      */
     public static void setTextByHtml(TextView textView, String htmlStr, Html.ImageGetter imageGetter,
             Html.TagHandler tagHandler) {
+        if (TextUtils.isEmpty(htmlStr)) {
+            return;
+        }
+
         Spanned text = Html.fromHtml(htmlStr, imageGetter, tagHandler);
         textView.setText(text);
     }
@@ -70,6 +80,17 @@ public abstract class TextViewHtmlUtils {
      */
     public static void setTextAndImgByHtml4Path(TextView textView, String htmlStr) {
         TextViewHtmlUtils.setTextByHtml(textView, htmlStr, new ImgGetter4Path(), null);
+    }
+
+    /**
+     * 会有图片处理，图片是从res中获取
+     * 
+     * @param textView
+     * @param htmlStr
+     * @param context
+     */
+    public static void setTextAndImgByHtml4Resid(TextView textView, String htmlStr, Context context) {
+        TextViewHtmlUtils.setTextByHtml(textView, htmlStr, new ImgGetter4Resid(context), null);
     }
 
     /**

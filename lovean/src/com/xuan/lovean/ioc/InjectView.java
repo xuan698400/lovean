@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 自动输入view的注解
+ * 世界上最轻量级IOS框架
  * 
  * @author xuan
  */
@@ -19,17 +19,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface InjectView {
 
-	/**
-	 * view的id索引
-	 * 
-	 * @return
-	 */
-	int value() default -1;
+    /**
+     * view的id索引
+     * 
+     * @return
+     */
+    int value() default -1;
 
-	/**
-	 * 注解
-	 * 
-	 * @return
-	 */
-	String tag() default "";
+    /**
+     * 注解
+     * 
+     * @return
+     */
+    String tag() default "";
 }

@@ -73,7 +73,7 @@ public class FileEntityHandler {
         }
 
         InputStream input = entity.getContent();
-        long count = entity.getContentLength() + current;
+        long count = entity.getContentLength() + current;// 如果是断点续传总数要这次的加上之前的
 
         if (current >= count || mStop) {
             os.close();// add by xuan
@@ -91,6 +91,7 @@ public class FileEntityHandler {
             }
         }
 
+        // 完成时
         if (callback != null) {
             callback.callBack(count, current, true);
         }
