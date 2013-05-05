@@ -1,14 +1,15 @@
-package com.xuan.lovean;
+package com.xuan.lovean.demo.http;
 
 import android.os.Bundle;
 import android.util.Log;
 
+import com.xuan.lovean.R;
 import com.xuan.lovean.http.AnHttp;
 import com.xuan.lovean.http.helper.AjaxCallBack;
 import com.xuan.lovean.http.helper.AjaxParams;
 import com.xuan.lovean.ioc.AnActivity;
 
-public class MainLoveAnActivity extends AnActivity {
+public class DemoHttpMain extends AnActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
