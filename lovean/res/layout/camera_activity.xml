@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <!-- 头部标题部分 -->
+    <RelativeLayout 
+        android:id="@+id/headerRelativeLayout"
+    	android:layout_width="fill_parent"
+    	android:layout_height="60dp"
+    	android:layout_alignParentTop="true">
+        <TextView 
+            android:layout_width="fill_parent"
+    		android:layout_height="60dp"
+    		android:background="@android:color/black"
+    		android:text="拍照"
+    		android:gravity="center"
+    		android:textColor="@android:color/white"
+    		android:textSize="20sp" />
+    </RelativeLayout>
+    <com.xuan.lovean.camera.CameraPreview 
+        android:id="@+id/preview" 
+        android:layout_height="fill_parent" 
+        android:layout_gravity="center" 
+        android:layout_width="fill_parent"
+        android:layout_above="@+id/bottomRelativeLayout"
+        android:layout_below="@+id/headerRelativeLayout">
+    </com.xuan.lovean.camera.CameraPreview>
+    <!-- 头部标题部分 -->
+    <RelativeLayout 
+        android:id="@+id/bottomRelativeLayout"
+    	android:layout_width="fill_parent"
+    	android:layout_height="60dp"
+    	android:layout_alignParentBottom="true"
+    	android:background="@android:color/black">
+        <Button 
+            android:text="返回" 
+            android:id="@+id/button1" 
+            android:layout_width="60dp" 
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp" 
+            android:layout_centerVertical="true"
+            android:background="@color/btn_normal_color"
+            android:textSize="20sp"/>
+        
+        <Button 
+            android:text="确定" 
+            android:id="@+id/button2" 
+            android:layout_width="60dp" 
+            android:layout_height="30dp"
+            android:layout_toRightOf="@+id/button1"
+            android:layout_marginLeft="10dp" 
+            android:layout_centerVertical="true"
+            android:background="@color/btn_normal_color"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+</RelativeLayout>
